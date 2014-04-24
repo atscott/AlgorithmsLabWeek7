@@ -9,15 +9,9 @@ import java.util.List;
  * Time: 2:01 PM
  */
 public class Node {
-  protected List<NodeConnection> connections = new ArrayList<>();
+  public final String name;
 
-  public void addConnection(Node node, int distance) {
-    connections.add(new NodeConnection(node, distance));
-    node.connections.add(new NodeConnection(this, distance));
+  public Node(String name) {
+    this.name = name;
   }
-
-  public java.util.Iterator<NodeConnection> getConnectionsIterator() {
-    return connections.iterator();
-  }
-
 }

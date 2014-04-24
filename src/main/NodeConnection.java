@@ -15,4 +15,9 @@ public class NodeConnection {
     this.node1 = node1;
     this.node2 = node2;
   }
+
+  @Override
+  public String toString() {
+    return String.format("%s to %s (distance %s)", node1, node2, distance);
+  }
 }

@@ -16,6 +16,18 @@ import java.util.List;
  */
 public class PathTester {
 
+  @Test
+  public void findPathReturnsEmptyListIfStartNodeIsGoalNode() {
+    Node node1 = new Node("node1");
+    Node node2 = new Node("node2");
+    NodeConnection n12 = new NodeConnection(node1, node2, 1);
+    NodeCollection collection = new NodeCollection(n12);
+
+    PathFinder finder = new PathFinder();
+    List<NodeConnection> actualConnectionsUsed = finder.findPath(collection, node1, node1);
+    List<NodeConnection> expectedConnectionsUsed = new ArrayList<>();
+    Assert.assertEquals(actualConnectionsUsed, expectedConnectionsUsed);
+  }
 
   @Test
   public void findOnlyPathSingleConnection() {

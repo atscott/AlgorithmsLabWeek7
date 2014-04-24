@@ -1,7 +1,5 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * User: atscott
@@ -10,6 +8,7 @@ import java.util.List;
  */
 public class Node {
   public final String name;
+  public boolean visited = false;
 
   public Node(String name) {
     this.name = name;

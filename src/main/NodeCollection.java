@@ -17,7 +17,6 @@ public class NodeCollection {
 
   public NodeCollection(List<NodeConnection> connections) {
     this.connections = new ArrayList<>(connections);
-    NodeConnection[] temp = new NodeConnection[connections.size()];
     for (NodeConnection connection : connections) {
       addNodeToConnectionsByNode(connection, connection.node1);
       addNodeToConnectionsByNode(connection, connection.node2);
@@ -37,11 +36,4 @@ public class NodeCollection {
     return connectionsByNode.get(targetNode);
   }
 
-  public void removeConnectionsRelatedToNode(Node startNode) {
-    List<NodeConnection> connectionsRemoved = connectionsByNode.remove(startNode);
-    connections.removeAll(connectionsRemoved);
-    for(NodeConnection connection : connectionsRemoved){
-      connection.
-    }
-  }
 }

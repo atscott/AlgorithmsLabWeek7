@@ -1,7 +1,6 @@
 package main;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,29 +11,42 @@ import java.util.List;
 public class PathFinder {
 
   public List<NodeConnection> findPath(int maxEdgesUsed, NodeCollection collection, Node startNode, Node goalNode) {
+    if(startNode == goalNode){
+      return new ArrayList<>();
+    }
+
     int maxEdgesToUse = maxEdgesUsed;
     List<List<NodeConnection>> candidatePaths = new ArrayList<>();
     List<NodeConnection> connectionsForStartNode = collection.getConnectionsRelatedToNode(startNode);
     for (NodeConnection connection : connectionsForStartNode) {
-      NodeCollection remainingCollection = new NodeCollection(collection.connections);
-      remainingCollection.removeConnectionsRelatedToNode(startNode);
       Node targetNode;
       if (connection.node1 != startNode) {
         targetNode = connection.node1;
       } else {
         targetNode = connection.node2;
       }
-      candidatePaths.add(findPath(maxEdgesUsed, remainingCollection, targetNode, goalNode));
+      if (!targetNode.visited) {
+        startNode.visited = true;
+        List<NodeConnection> candidatePath = new ArrayList<>();
+        candidatePath.add(connection);
+        candidatePath.addAll(findPath(maxEdgesUsed, collection, targetNode, goalNode));
+        candidatePaths.add(candidatePath);
+        startNode.visited = false;
+      }
     }
 
     int bestPathDistance = -1;
     List<NodeConnection> bestPath = new ArrayList<>();
     for (List<NodeConnection> path : candidatePaths) {
       int distanceForPath = 0;
+      boolean pathHasGoalNode = false;
       for (NodeConnection connection : path) {
+        if (connection.node1 == goalNode || connection.node2 == goalNode) {
+          pathHasGoalNode = true;
+        }
         distanceForPath += connection.distance;
       }
-      if (distanceForPath < bestPathDistance || bestPathDistance == -1) {
+      if (pathHasGoalNode && (distanceForPath < bestPathDistance || bestPathDistance == -1)) {
         bestPathDistance = distanceForPath;
         bestPath.clear();
         bestPath.addAll(path);

@@ -18,12 +18,12 @@ public class EdgeCollection {
   public EdgeCollection(List<Edge> edges) {
     this.edges = new ArrayList<>(edges);
     for (Edge edge : edges) {
-      addNodeToedgesByNode(edge, edge.node1);
-      addNodeToedgesByNode(edge, edge.node2);
+      addNodeToEdgesByNode(edge, edge.node1);
+      addNodeToEdgesByNode(edge, edge.node2);
     }
   }
 
-  private void addNodeToedgesByNode(Edge edge, Node node) {
+  private void addNodeToEdgesByNode(Edge edge, Node node) {
     List<Edge> edgesForNode = edgesByNode.get(node);
     if (edgesForNode == null) {
       edgesForNode = new ArrayList<>();

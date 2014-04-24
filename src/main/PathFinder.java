@@ -53,7 +53,6 @@ public class PathFinder {
   }
 
   private NodePath getShortestPathFromCandidates(List<NodePath> candidatePaths) {
-
     NodePath bestPath = null;
     for (NodePath path : candidatePaths) {
       if (path.containsGoalNode && (bestPath == null || path.getTotalDistance() < bestPath.getTotalDistance())) {

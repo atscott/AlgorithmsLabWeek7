@@ -1,5 +1,10 @@
 package main;
 
+import main.nodesAndEdges.Edge;
+import main.nodesAndEdges.EdgeCollection;
+import main.nodesAndEdges.Node;
+import main.nodesAndEdges.NodePath;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

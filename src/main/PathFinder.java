@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -10,64 +11,58 @@ import java.util.List;
  */
 public class PathFinder {
 
-  public List<NodeConnection> findPath(NodeCollection nodeCollection, Node startNode, Node goalNode) {
-    return findPath(Integer.MAX_VALUE, nodeCollection, startNode, goalNode);
+  public NodePath findPath(EdgeCollection edgeCollection, Node startNode, Node goalNode) {
+    return findPath(Integer.MAX_VALUE, edgeCollection, startNode, goalNode);
   }
 
-  public List<NodeConnection> findPath(int maxEdgesToUse, NodeCollection collection, Node startNode, Node goalNode) {
+  public NodePath findPath(int maxEdgesToUse, EdgeCollection collection, Node startNode, Node goalNode) {
     return findPathRecursiveImplementation(maxEdgesToUse, collection, startNode, goalNode, 0);
   }
 
-  private List<NodeConnection> findPathRecursiveImplementation(int maxEdgesToUse, NodeCollection collection, Node startNode, Node goalNode, int edgesAlreadyUsed) {
+  private NodePath findPathRecursiveImplementation(int maxEdgesToUse, EdgeCollection collection, Node startNode, Node goalNode, int edgesAlreadyUsed) {
     if (startNode == goalNode || edgesAlreadyUsed >= maxEdgesToUse) {
-      return new ArrayList<>();
+      return new NodePath(new EdgeCollection(new ArrayList<Edge>()), 0);
     }
 
-    List<List<NodeConnection>> candidatePaths = new ArrayList<>();
-    for (NodeConnection connection : collection.getConnectionsRelatedToNode(startNode)) {
-      Node targetNode = getTargetNodeForConnection(startNode, connection);
+    List<NodePath> candidatePaths = new ArrayList<>();
+    for (Edge edge : collection.getedgesRelatedToNode(startNode)) {
+      Node targetNode = getTargetNodeForedge(startNode, edge);
       if (!targetNode.visited) {
         startNode.visited = true;
-        List<NodeConnection> candidatePath = new ArrayList<>();
-        candidatePath.add(connection);
-        candidatePath.addAll(findPathRecursiveImplementation(maxEdgesToUse, collection, targetNode, goalNode, edgesAlreadyUsed + 1));
+        NodePath candidatePath = new NodePath(new EdgeCollection(Arrays.asList(edge)), edge.distance);
+        if (targetNode == goalNode) {
+          candidatePath.containsGoalNode = true;
+        }
+        candidatePath.appendPath(findPathRecursiveImplementation(maxEdgesToUse, collection, targetNode, goalNode, edgesAlreadyUsed + 1));
         startNode.visited = false;
         candidatePaths.add(candidatePath);
       }
     }
 
-    return getShortestPathFromCandidates(goalNode, candidatePaths);
+    return getShortestPathFromCandidates(candidatePaths);
   }
 
-  private Node getTargetNodeForConnection(Node startNode, NodeConnection connection) {
+  private Node getTargetNodeForedge(Node startNode, Edge edge) {
     Node targetNode;
-    if (connection.node1 != startNode) {
-      targetNode = connection.node1;
+    if (edge.node1 != startNode) {
+      targetNode = edge.node1;
     } else {
-      targetNode = connection.node2;
+      targetNode = edge.node2;
     }
     return targetNode;
   }
 
-  private List<NodeConnection> getShortestPathFromCandidates(Node goalNode, List<List<NodeConnection>> candidatePaths) {
-    int bestPathDistance = -1;
-    List<NodeConnection> bestPath = new ArrayList<>();
-    for (List<NodeConnection> path : candidatePaths) {
-      int distanceForPath = 0;
-      boolean pathHasGoalNode = false;
-      for (NodeConnection connection : path) {
-        if (connection.node1 == goalNode || connection.node2 == goalNode) {
-          pathHasGoalNode = true;
-        }
-        distanceForPath += connection.distance;
-      }
-      if (pathHasGoalNode && (distanceForPath < bestPathDistance || bestPathDistance == -1)) {
-        bestPathDistance = distanceForPath;
-        bestPath.clear();
-        bestPath.addAll(path);
+  private NodePath getShortestPathFromCandidates(List<NodePath> candidatePaths) {
+
+    NodePath bestPath = null;
+    for (NodePath path : candidatePaths) {
+      if (path.containsGoalNode && (bestPath == null || path.getTotalDistance() < bestPath.getTotalDistance())) {
+        bestPath = path;
       }
     }
-
+    if (bestPath == null) {
+      return new NodePath(new EdgeCollection(new ArrayList<Edge>()), 0);
+    }
     return bestPath;
   }
 

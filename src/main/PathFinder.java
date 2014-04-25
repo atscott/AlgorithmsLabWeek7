@@ -31,7 +31,7 @@ public class PathFinder {
 
     List<NodePath> candidatePaths = new ArrayList<>();
     for (Edge edge : collection.getedgesRelatedToNode(startNode)) {
-      Node targetNode = getTargetNodeForedge(startNode, edge);
+      Node targetNode = getTargetNodeForEdge(startNode, edge);
       if (!targetNode.visited) {
         startNode.visited = true;
         NodePath candidatePath = new NodePath(new EdgeCollection(Arrays.asList(edge)), edge.distance);
@@ -47,7 +47,7 @@ public class PathFinder {
     return getShortestPathFromCandidates(candidatePaths);
   }
 
-  private Node getTargetNodeForedge(Node startNode, Edge edge) {
+  private Node getTargetNodeForEdge(Node startNode, Edge edge) {
     Node targetNode;
     if (edge.node1 != startNode) {
       targetNode = edge.node1;

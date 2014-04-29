@@ -5,9 +5,7 @@ import main.nodesAndEdges.EdgeCollection;
 import main.nodesAndEdges.Node;
 import main.nodesAndEdges.NodePath;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: atscott
@@ -15,6 +13,8 @@ import java.util.List;
  * Time: 2:48 PM
  */
 public class PathFinder {
+
+  Map<Node, NodePath> shortestPathsByStartNode = new HashMap<>();
 
   public NodePath findPath(EdgeCollection edgeCollection, Node startNode, Node goalNode) {
     return findPath(Integer.MAX_VALUE, edgeCollection, startNode, goalNode);
@@ -33,13 +33,17 @@ public class PathFinder {
     for (Edge edge : collection.getedgesRelatedToNode(startNode)) {
       Node targetNode = getTargetNodeForEdge(startNode, edge);
       if (!targetNode.visited) {
-        startNode.visited = true;
         NodePath candidatePath = new NodePath(new EdgeCollection(Arrays.asList(edge)), edge.distance);
-        if (targetNode == goalNode) {
-          candidatePath.containsGoalNode = true;
+        if (shortestPathsByStartNode.containsKey(targetNode)) {
+          candidatePath.appendPath(shortestPathsByStartNode.get(targetNode));
+        } else {
+          startNode.visited = true;
+          if (targetNode == goalNode) {
+            candidatePath.containsGoalNode = true;
+          }
+          candidatePath.appendPath(findPathRecursiveImplementation(maxEdgesToUse, collection, targetNode, goalNode, edgesAlreadyUsed + 1));
+          startNode.visited = false;
         }
-        candidatePath.appendPath(findPathRecursiveImplementation(maxEdgesToUse, collection, targetNode, goalNode, edgesAlreadyUsed + 1));
-        startNode.visited = false;
         candidatePaths.add(candidatePath);
       }
     }

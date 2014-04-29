@@ -107,4 +107,29 @@ public class PathTester {
     NodePath expectedPath = new NodePath(new EdgeCollection(n13), 9);
     Assert.assertEquals(actualPathTaken, expectedPath);
   }
+
+  @Test
+  void aTestOfDynamicProgramming(){
+    Node node1 = new Node("node1");
+    Node node2 = new Node("node2");
+    Node node3 = new Node("node3");
+    Node node4 = new Node("node4");
+    Node node5 = new Node("node5");
+
+    Edge n12  = new Edge(node1, node2, 8);
+    Edge n25 = new Edge(node2,node5,1);
+    Edge n13 = new Edge(node1,node3,2);
+    Edge n23 = new Edge(node2,node3,3);
+    Edge n24 = new Edge(node2,node4,1);
+    Edge n45 = new Edge(node4,node5,3);
+    Edge n15 = new Edge(node1,node5,3);
+
+    EdgeCollection collection = new EdgeCollection(n12,n25,n13,n23,n24,n45,n15);
+    PathFinder finder = new PathFinder();
+    NodePath actualPathTaken = finder.findPath(collection, node1, node5);
+    NodePath expectedPath = new NodePath(new EdgeCollection(n15), 3);
+    Assert.assertEquals(actualPathTaken, expectedPath);
+
+  }
+
 }

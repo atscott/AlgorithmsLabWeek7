@@ -29,26 +29,30 @@ public class PathFinder {
       return new NodePath(new EdgeCollection(new ArrayList<Edge>()), 0);
     }
 
+    if (shortestPathsByStartNode.containsKey(startNode) && (shortestPathsByStartNode.get(startNode).getEdgeCount() + edgesAlreadyUsed) < maxEdgesToUse) {
+      return shortestPathsByStartNode.get(startNode);
+    }
+
     List<NodePath> candidatePaths = new ArrayList<>();
     for (Edge edge : collection.getedgesRelatedToNode(startNode)) {
       Node targetNode = getTargetNodeForEdge(startNode, edge);
       if (!targetNode.visited) {
         NodePath candidatePath = new NodePath(new EdgeCollection(Arrays.asList(edge)), edge.distance);
-        if (shortestPathsByStartNode.containsKey(targetNode)) {
-          candidatePath.appendPath(shortestPathsByStartNode.get(targetNode));
-        } else {
-          startNode.visited = true;
-          if (targetNode == goalNode) {
-            candidatePath.containsGoalNode = true;
-          }
-          candidatePath.appendPath(findPathRecursiveImplementation(maxEdgesToUse, collection, targetNode, goalNode, edgesAlreadyUsed + 1));
-          startNode.visited = false;
+        startNode.visited = true;
+        if (targetNode == goalNode) {
+          candidatePath.containsGoalNode = true;
         }
+        candidatePath.appendPath(findPathRecursiveImplementation(maxEdgesToUse, collection, targetNode, goalNode, edgesAlreadyUsed + 1));
+        startNode.visited = false;
         candidatePaths.add(candidatePath);
       }
     }
 
-    return getShortestPathFromCandidates(candidatePaths);
+    NodePath shortest = getShortestPathFromCandidates(candidatePaths);
+    if (shortest.getEdgeCount() > 0) {
+      shortestPathsByStartNode.put(startNode, shortest);
+    }
+    return shortest;
   }
 
   private Node getTargetNodeForEdge(Node startNode, Edge edge) {

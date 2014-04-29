@@ -10,9 +10,14 @@ public class NodePath {
   private int totalDistance = 0;
   public boolean containsGoalNode = false;
 
+
   public NodePath(EdgeCollection edgesInPath, int totalDistance) {
     this.edgesInPath = edgesInPath;
     this.totalDistance = totalDistance;
+  }
+
+  public int getEdgeCount(){
+    return edgesInPath.edges.size();
   }
 
   public void appendPath(NodePath path) {
